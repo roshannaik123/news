@@ -1,0 +1,10 @@
+# Environment variables
+.env
+.env.*
+**/.env
+**/.env.*
+clinet/.env
+server/.env
+
+# Node
+node_modules/

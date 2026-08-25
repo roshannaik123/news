@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const formDate = () => {
     const now = new Date();
-    console.log(now);
 
     const days = [
       "SUNDAY",
