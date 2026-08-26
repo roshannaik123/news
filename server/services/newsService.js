@@ -7,19 +7,25 @@ export const getNews = async (
     limit = 10
 ) => {
 
+    const params = {
+        q: category && category !== "all"
+            ? category
+            : "web development",
+        lang: "en",
+        max: limit,
+        page,
+        apikey: process.env.GNEWS_API_KEY,
+    };
+
+    // Only add dates when date exists
+    if (date) {
+        params.from = `${date}T00:00:00Z`;
+        params.to = `${date}T23:59:59Z`;
+    }
+
     const response = await axios.get(
         "https://gnews.io/api/v4/search",
-        {
-            params: {
-                q: category || "web development",
-                from: `${date}T00:00:00Z`,
-                to: `${date}T23:59:59Z`,
-                lang: "en",
-                max: limit,
-                page,
-                apikey: process.env.GNEWS_API_KEY,
-            },
-        }
+        { params }
     );
 
     return response.data;

@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import newsRoutes from "./routes/newsRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+
+
 import { errorMiddleware } from "./middleware/errorMiddleware.js";
 const app = express();
 
