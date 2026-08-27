@@ -1,13 +1,21 @@
 import React, { useMemo, useState } from "react";
-
 import CategoryTabs from "../features/news/components/CategoryTabs";
 import NewsGrid from "../features/news/components/NewsGrid";
 import useNews from "../features/news/hooks/useNews";
 
 const News = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  const { data: news = [], isLoading, isError, error } = useNews();
+  const [page, setPage] = useState(1);
+  const {
+    data: news = [],
+    isLoading,
+    isError,
+    error,
+  } = useNews({
+    category: selectedCategory.toLocaleLowerCase(),
+    page: page,
+    limit: 10,
+  });
 
   const filteredNews = useMemo(() => {
     if (selectedCategory === "All") {
@@ -16,6 +24,7 @@ const News = () => {
 
     return news.filter((item) => item.category === selectedCategory);
   }, [news, selectedCategory]);
+
 
   if (isLoading) {
     return (
@@ -54,6 +63,7 @@ const News = () => {
         </div>
 
         <NewsGrid news={filteredNews} />
+        <button onClick={() => setPage((prev) => prev + 1)}>Load More</button>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ export const getNews = async (
     page = 1,
     limit = 10
 ) => {
+  try {
 
     const params = {
         q: category && category !== "all"
@@ -28,5 +29,10 @@ export const getNews = async (
         { params }
     );
 
+
     return response.data;
+}catch(error){
+  console.log("GNews error:", error.response?.status);
+    console.log("GNews response:", error.response?.data);
+throw error}
 };

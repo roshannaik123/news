@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import fetchNews from "../services/newsApi";
 
-const useNews = () => {
+const useNews = ({category="all",page=1,limit=10}={}) => {
   return useQuery({
-    queryKey: ["news"],
-    queryFn: fetchNews,
+        queryKey: ["news", category, page, limit],
+    queryFn: ()=>fetchNews({category,page,limit}),
     staleTime: 30 * 60 * 1000,
   });
 };

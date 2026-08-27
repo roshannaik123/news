@@ -11,206 +11,58 @@ export const generateNewsWithGroq = async (articles) => {
     if (!articles || articles.length === 0) {
         throw new Error("No articles provided");
     }
+const formattedArticles = articles.map((article, index) => ({
+    index: index + 1,
+    id: article.id,
+    title: article.title,
+    description: article.description,
+    url: article.url,
+    publishedAt: article.publishedAt,
+    source: article.source?.name
+}));
 
-    const formattedArticles = articles.map((article, index) => ({
-        index: index + 1,
-        id: article.id,
-        title: article.title,
-        description: article.description,
-        content: article.content,
-        url: article.url,
-        publishedAt: article.publishedAt,
-        source: article.source?.name
-    }));
+  const prompt = `
+You are the editor of WebDev Times.
 
-    const prompt = `
-You are WebDev Times, a technology news platform for software developers.
+Analyze the supplied articles and return only stories relevant to software developers.
 
-Your job is to analyze the supplied news articles and create developer-focused
-technology news.
+Allowed categories:
+AI, Dev Tools, Frontend, Backend, DevOps, Security.
 
-IMPORTANT:
+Reject:
+politics, entertainment, sports, general finance,
+healthcare, marketing, general business and non-technical news.
 
-USE ONLY THE INFORMATION PROVIDED IN THE ARTICLES.
+Rules:
+- Use ONLY information from the supplied articles.
+- Never invent facts.
+- Remove duplicate events.
+- Return at most 10 stories.
+- Return fewer if fewer relevant stories exist.
+- Write a 2-3 sentence developer-focused summary.
+- technologies must contain only technologies mentioned in the article.
+- importance must be 1-10.
 
-DO NOT:
-- invent facts
-- invent statistics
-- invent benchmark scores
-- invent version numbers
-- invent pricing
-- invent quotes
-- invent dates
-- invent features
-- invent company announcements
-
-If information is not present in the supplied articles, do not claim it.
-
---------------------------------------------------
-
-ALLOWED CATEGORIES
-
-Only generate news belonging to these categories:
-
-1. AI
-2. Dev Tools
-3. Frontend
-4. Backend
-5. DevOps
-6. Security
-
---------------------------------------------------
-
-REJECT THESE:
-
-- Politics
-- Entertainment
-- Sports
-- General finance
-- General economy
-- Healthcare
-- Celebrity news
-- General business news
-- Marketing news
-- Non-technical company announcements
-- Stories unrelated to software developers
-
---------------------------------------------------
-
-DEVELOPER RELEVANCE
-
-Prefer stories involving:
-
-AI models
-AI APIs
-LLMs
-Open-source AI
-AI coding tools
-React
-Next.js
-Vite
-Vue
-Angular
-Svelte
-Tailwind
-Node.js
-Express
-Bun
-Deno
-GitHub
-GitHub Copilot
-Cursor
-Windsurf
-VS Code
-npm
-Docker
-Kubernetes
-AWS
-Cloudflare
-Vercel
-Databases
-APIs
-Authentication
-Cybersecurity
-CVEs
-Developer tools
-Open-source projects
-
---------------------------------------------------
-
-DUPLICATES
-
-Multiple articles may describe the same event.
-
-If two or more articles describe the same event:
-
-- combine them
-- keep the strongest source
-- produce only ONE story
-
-Never generate duplicate stories.
-
---------------------------------------------------
-
-OUTPUT
-
-Generate exactly 10 stories if there are enough relevant articles.
-
-If there are fewer than 10 genuinely relevant stories, return only the
-number of valid stories available.
-
-Do NOT invent stories just to reach 10.
-
-Return ONLY valid JSON.
-
-No markdown.
-No code fences.
-No explanation.
-
-Each object must have exactly:
+Return ONLY JSON in this format:
 
 {
-    "id": "string",
-    "title": "string",
-    "summary": "string",
-    "technologies": ["string"],
-    "relevance": "High" | "Medium" | "Low",
-    "category": "AI" | "Dev Tools" | "Frontend" | "Backend" | "DevOps" | "Security",
-    "importance": number,
-    "source": "string",
-    "url": "string"
+  "news": [
+    {
+      "id": "string",
+      "title": "string",
+      "summary": "string",
+      "technologies": ["string"],
+      "relevance": "High",
+      "category": "AI",
+      "importance": 8,
+      "source": "string",
+      "url": "string"
+    }
+  ]
 }
 
---------------------------------------------------
-
-TITLE
-
-Make the title specific and interesting.
-
-Avoid generic titles such as:
-
-"New AI update released"
-
-Prefer:
-
-"Open-source model challenges commercial AI APIs"
-
---------------------------------------------------
-
-SUMMARY
-
-Write 2-3 sentences.
-
-Explain:
-
-1. What happened?
-2. Why does it matter to developers?
-
-Do not add information that isn't present in the source article.
-
---------------------------------------------------
-
-TECHNOLOGIES
-
-List the actual technologies mentioned in the article.
-
---------------------------------------------------
-
-IMPORTANCE
-
-Score from 1-10.
-
-10 = extremely important for developers
-8-9 = major developer impact
-6-7 = meaningful developer impact
-4-5 = moderate relevance
-1-3 = weak relevance
-
---------------------------------------------------
-
-ARTICLES
-
-${JSON.stringify(formattedArticles, null, 2)}
+Articles:
+${JSON.stringify(formattedArticles)}
 `;
 
     const completion = await groq.chat.completions.create({

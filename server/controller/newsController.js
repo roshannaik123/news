@@ -24,7 +24,6 @@ export const getAllNews = async (req, res, next) => {
 
         // 1. Check cache
         const cachedNews = getCachedNews(cacheKey);
-        console.log("CachedNews",cachedNews)
 
         // If requesting page 1 and cache exists
         if (cachedNews && pageNumber === 1) {
@@ -42,11 +41,13 @@ export const getAllNews = async (req, res, next) => {
             pageNumber,
             limitNumber
         );
+        console.log(news);
 
         // 3. Remove duplicates
         const uniqueArticles = removeDuplicates(
             news.articles || []
         );
+        console.log(uniqueArticles.length);
 
         // 4. No articles
         if (uniqueArticles.length === 0) {
@@ -62,6 +63,7 @@ export const getAllNews = async (req, res, next) => {
         const aiNews = await generateNewsWithGroq(
             uniqueArticles
         );
+        console.log("ai news ",aiNews.length)
 
         let finalNews;
 
