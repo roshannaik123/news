@@ -1,7 +1,7 @@
 import apiClient from "../../../lib/axios";
 
 const fetchNews = async ({category="all",page=1,limit=10,date}) => {
-  const response = await apiClient.get("/news",{
+  const response = await apiClient.get("api/news",{
     params:{
       category,page,limit,date,
     }
