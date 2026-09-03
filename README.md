@@ -2,6 +2,10 @@
 
 WebDev Times is a full-stack news dashboard for web development and AI news. It fetches articles from GNews, removes duplicates, and uses Groq to curate developer-focused results.
 
+## Hosted site
+
+[Visit WebDev Times](https://news-4-wxke.onrender.com)
+
 ## Stack
 
 - **Frontend:** React, Vite, React Router, TanStack Query, Redux Toolkit
