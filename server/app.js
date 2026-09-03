@@ -8,7 +8,9 @@ app.use(cors());
 
 
 app.use(express.json());
-
+app.get("/", (req, res) => {
+  res.send("WebDev Times Backend is running");
+});
 app.use("/api/news",newsRoutes);
 app.use(errorMiddleware);
 
