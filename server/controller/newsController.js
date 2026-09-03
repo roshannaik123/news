@@ -15,6 +15,10 @@ export const getAllNews = async (req, res, next) => {
             page = "1",
             limit = "10"
         } = req.query;
+        console.log(
+  "GNEWS_API_KEY exists:",
+  !!process.env.GNEWS_API_KEY
+);
 
         const pageNumber = Number(page);
         const limitNumber = Number(limit);
