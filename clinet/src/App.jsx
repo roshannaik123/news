@@ -4,6 +4,8 @@ import LiveNewsTicker from "./features/news/components/LiveNewsTicker";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import NewsDetails from "./pages/NewsDetails";
+import { useEffect } from "react";
+import apiClient from "./lib/axios";
 
 const App = () => {
   return (
