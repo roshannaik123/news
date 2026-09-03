@@ -5,26 +5,27 @@ import useNews from "../features/news/hooks/useNews";
 
 const News = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [page, setPage] = useState(1);
+
   const {
-    data: news = [],
+    data: news,
     isLoading,
     isError,
     error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useNews({
-    category: selectedCategory.toLocaleLowerCase(),
-    page: page,
+    category: selectedCategory.toLowerCase(),
     limit: 10,
   });
 
-  const filteredNews = useMemo(() => {
-    if (selectedCategory === "All") {
-      return news;
-    }
+  const allnews = useMemo(() => {
+    return news?.pages?.flatMap((page) => page || []) || [];
+  }, [news]);
 
-    return news.filter((item) => item.category === selectedCategory);
-  }, [news, selectedCategory]);
-
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
 
   if (isLoading) {
     return (
@@ -58,12 +59,23 @@ const News = () => {
         <div className="mb-8">
           <CategoryTabs
             selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
+            onCategoryChange={handleCategoryChange}
           />
         </div>
 
-        <NewsGrid news={filteredNews} />
-        <button onClick={() => setPage((prev) => prev + 1)}>Load More</button>
+        <NewsGrid allnews={allnews} />
+
+        {hasNextPage && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              className="px-6 py-3 rounded-lg bg-white text-black disabled:opacity-50"
+            >
+              {isFetchingNextPage ? "Loading..." : "Load More"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

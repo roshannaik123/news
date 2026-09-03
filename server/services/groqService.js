@@ -21,29 +21,64 @@ const formattedArticles = articles.map((article, index) => ({
     source: article.source?.name
 }));
 
-  const prompt = `
+ const prompt = `
 You are the editor of WebDev Times.
 
-Analyze the supplied articles and return only stories relevant to software developers.
+Your job is to analyze the supplied articles and select the best stories
+that are directly useful to software developers.
 
-Allowed categories:
-AI, Dev Tools, Frontend, Backend, DevOps, Security.
+ALLOWED CATEGORIES:
+AI, Dev Tools, Frontend, Backend, DevOps, Security
 
-Reject:
-politics, entertainment, sports, general finance,
-healthcare, marketing, general business and non-technical news.
+REJECT:
+- Politics
+- Entertainment
+- Sports
+- General finance
+- Healthcare
+- Marketing
+- General business
+- Non-technical news
 
-Rules:
-- Use ONLY information from the supplied articles.
-- Never invent facts.
-- Remove duplicate events.
-- Return at most 10 stories.
-- Return fewer if fewer relevant stories exist.
-- Write a 2-3 sentence developer-focused summary.
-- technologies must contain only technologies mentioned in the article.
-- importance must be 1-10.
+STRICT RULES:
 
-Return ONLY JSON in this format:
+1. Use ONLY information contained in the supplied articles.
+2. Never invent facts.
+3. Never create a story that does not exist in the supplied articles.
+4. Remove duplicate events.
+5. Prefer the most technically relevant and important stories.
+6. Return EXACTLY 10 stories if 10 or more valid developer-relevant
+   articles are available.
+7. If fewer than 10 valid developer-relevant articles are available,
+   return all valid stories. NEVER fabricate stories to reach 10.
+8. Each returned story must correspond to exactly one supplied article.
+9. technologies must contain ONLY technologies explicitly mentioned
+   in that article.
+10. Write a developer-focused summary in 2-3 sentences.
+11. importance must be an integer from 1 to 10.
+12. relevance must be one of:
+    "High", "Medium", "Low"
+13. category must be exactly one of:
+    "AI", "Dev Tools", "Frontend", "Backend", "DevOps", "Security"
+14. Keep the original article id, source and url.
+15. Do not modify or invent URLs.
+16. Do not return duplicate articles.
+17. Return ONLY valid JSON.
+
+SELECTION PRIORITY:
+
+When more than 10 valid articles exist, select the 10 most important
+stories using this priority:
+
+1. Major AI releases and developments
+2. Important developer tools and frameworks
+3. Major security vulnerabilities affecting developers
+4. Frontend and backend framework updates
+5. DevOps, cloud and infrastructure developments
+6. Important programming language updates
+7. Other technically significant developer news
+
+OUTPUT FORMAT:
 
 {
   "news": [
@@ -60,6 +95,12 @@ Return ONLY JSON in this format:
     }
   ]
 }
+
+IMPORTANT:
+If there are 10 or more valid articles, the "news" array MUST contain
+exactly 10 objects.
+
+If there are fewer than 10 valid articles, return only the valid articles.
 
 Articles:
 ${JSON.stringify(formattedArticles)}

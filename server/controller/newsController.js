@@ -75,10 +75,11 @@ export const getAllNews = async (req, res, next) => {
 
         // 7. Page 2+ → append to existing cache
         else {
-            finalNews = appendCachedNews(
+             appendCachedNews(
                 cacheKey,
                 aiNews
             );
+            finalNews =aiNews
         }
 
         // 8. Return

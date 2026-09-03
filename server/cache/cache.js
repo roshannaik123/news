@@ -24,6 +24,7 @@ export const setCachedNews = (key, data) => {
     cache.set(key, {
         data,
         timestamp: Date.now(),
+        
     });
 };
 
